@@ -1,21 +1,23 @@
-'use strict';
-const Cards = require('../Cards'),
-	Components = require('../Components'),
-	sock = require('../sock'),
-	store = require('../store'),
-	React = require('react');
+import React from 'react';
 
-module.exports = class ArenaTop extends React.Component {
+import Cards from '../Cards.js';
+import * as Components from '../Components/index.js';
+import * as sock from '../sock.js';
+import * as store from '../store.js';
+
+export default class ArenaTop extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {};
 	}
 
 	componentDidMount() {
-		sock.emit('arenatop', { lv: this.props.lv });
-		store.store.dispatch(store.setCmds({
-			arenatop: info => this.setState(info),
-		}));
+		sock.emit({ x: 'arenatop', lv: this.props.lv });
+		store.store.dispatch(
+			store.setCmds({
+				arenatop: info => this.setState(info),
+			}),
+		);
 	}
 
 	render() {
@@ -51,7 +53,7 @@ module.exports = class ArenaTop extends React.Component {
 								onMouseLeave={() => this.setState({ card: null })}>
 								{card.name}
 							</span>,
-						)
+						);
 						return <li>{lic}</li>;
 					})}
 				</ol>
@@ -66,4 +68,4 @@ module.exports = class ArenaTop extends React.Component {
 			</>
 		);
 	}
-};
+}

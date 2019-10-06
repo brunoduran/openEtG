@@ -1,15 +1,17 @@
-const db = require('./db');
-let Bz = null;
+import db from './db.js';
+let Bz = null,
+	Bzp = null;
 
-exports.load = function() {
-	return new Promise((resolve, reject) => {
-		if (Bz) return resolve(Bz);
-		db.get('Bazaar', (err, bzjson) =>
-			resolve(Bz = bzjson ? JSON.parse(bzjson) : {})
-		);
-	});
+async function _load() {
+	const bzjson = await db.get('Bazaar');
+	return (Bz = bzjson ? JSON.parse(bzjson) : {});
+}
+export async function load() {
+	if (Bz) return Bz;
+	if (Bzp) return Bzp;
+	return _load();
 }
 
-exports.store = function() {
+export function store() {
 	if (Bz) db.set('Bazaar', JSON.stringify(Bz));
 }

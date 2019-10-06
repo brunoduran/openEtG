@@ -1,7 +1,10 @@
-const React = require('react'),
-	store = require('../store'),
-	{ connect } = require('react-redux');
+import React from 'react';
+import { connect } from 'react-redux';
+import Login from './Login.js';
 
-module.exports = connect(state => ({ view: state.nav.view || require('./Login'), props: state.nav.props }))(function App(props) {
+export default connect(state => ({
+	view: state.nav.view || Login,
+	props: state.nav.props,
+}))(function App(props) {
 	return React.createElement(props.view, props.props);
 });

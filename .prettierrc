@@ -1,7 +1,9 @@
 {
-	"parser": "babylon",
+	"parser": "babel",
 	"useTabs": true,
 	"jsxBracketSameLine": true,
 	"trailingComma": "all",
-	"singleQuote": true
+	"singleQuote": true,
+	"endOfLine": "lf",
+	"printWidth": 80
 }

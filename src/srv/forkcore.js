@@ -1,21 +1,23 @@
-'use strict';
-const util = require('../util'),
-	cache = require('./cache'),
-	file = require('./file'),
-	Cards = require('../Cards');
+import { randint } from '../util.js';
+import * as cache from './cache.js';
+import file from './file.js';
+import card from './card.js';
+import deck from './deck.js';
+import speed from './speed.js';
+import collection from './collection.js';
 const lut = {
-	card: require('./card'),
-	deck: require('./deck'),
-	speed: require('./speed'),
-	collection: require('./collection'),
+	card,
+	deck,
+	speed,
+	collection,
 };
-module.exports = function(req, res) {
+export default function forkcore(req, res) {
 	try {
 		res.on('error', () => {});
 		const qidx = req.url.indexOf('?'),
 			url = ~qidx ? req.url.slice(1, qidx) : req.url.slice(1);
 		const ifmod = new Date(req.headers['if-modified-since'] || '').getTime();
-		if (cache.try(res, url, ifmod)) return;
+		if (cache._try(res, url, ifmod)) return;
 		const idx = url.indexOf('/'),
 			func = ~idx && lut[url.slice(0, idx)];
 		if (func) {
@@ -23,20 +25,11 @@ module.exports = function(req, res) {
 			if (func === lut.collection) cache.rm(url);
 		} else if (
 			!~url.indexOf('..') &&
-			url.match(/^(vanilla\/|cia\/)?$|\.(js(on|\.map)?|html?|css|csv|png|ogg)$/)
+			url.match(/^$|\.(js(on|\.map)?|html?|css|csv|png|ogg)$/)
 		) {
-			cache.add(
-				res,
-				url,
-				ifmod,
-				url.match(/^(vanilla\/|cia\/)?$/) ? url + 'index.html' : url,
-				file,
-			);
-		} else if (url == 'vanilla' || url == 'cia') {
-			res.writeHead(302, { Location: '/' + url + '/' });
-			res.end();
+			cache.add(res, url, ifmod, url || 'index.html', file);
 		} else if (url == 'speed') {
-			res.writeHead(302, { Location: '/speed/' + util.readint() });
+			res.writeHead(302, { Location: `/speed/${randint()}` });
 			res.end();
 		} else {
 			res.writeHead(404, { Connection: 'close' });
@@ -45,4 +38,4 @@ module.exports = function(req, res) {
 	} catch (ex) {
 		console.log('Forkcore', ex);
 	}
-};
+}

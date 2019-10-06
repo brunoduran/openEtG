@@ -1,37 +1,23 @@
 module.exports = {
 	entry: {
-		main: ['babel-polyfill', './src/ui/main.js'],
-		aivai: ['babel-polyfill', './src/aivai.js'],
-		art: ['babel-polyfill', './src/ui/art.js'],
-		mosaic: ['babel-polyfill', './src/ui/mosaic.js'],
-		vanilla: ['babel-polyfill', './src/vanilla/ui/main.js'],
-		vaivai: ['babel-polyfill', './src/vanilla/ui/aivai.js'],
-		vnamegame: ['babel-polyfill', './src/vanilla/ui/namegame.js'],
-		vspeed: ['babel-polyfill', './src/vanilla/ui/speed.js'],
-		vdeckinfo: ['babel-polyfill', './src/vanilla/ui/deckinfo.js'],
+		aivai: './src/aivai.js',
+		art: './src/ui/art.js',
+		deck: './src/ui/deck.js',
+		main: './src/ui/main.js',
+		mosaic: './src/ui/mosaic.js',
+		vaivai: './src/vanilla/ui/aivai.js',
+		vdeckinfo: './src/vanilla/ui/deckinfo.js',
+		vnamegame: './src/vanilla/ui/namegame.js',
+		vspeed: './src/vanilla/ui/speed.js',
 	},
 	output: {
 		path: __dirname,
-		filename: 'bundle.[name].js',
-		sourceMapFilename: 'bundle.[name].js.map',
+		publicPath: '/',
+		filename: 'bundle/[name].js',
+		chunkFilename: 'bundle/[name].js',
+		sourceMapFilename: 'bundle/[name].js.map',
 	},
 	devtool: 'cheap-source-map',
-	optimization: {
-		splitChunks: {
-			chunks: 'all',
-			cacheGroups: {
-				vendor: {
-					test: /[\\/]node_modules[\\/]/,
-					priority: -10,
-				},
-				commons: {
-					name: 'commons',
-					chunks: 'initial',
-					minChunks: 2,
-				},
-			},
-		},
-	},
 	module: {
 		rules: [
 			{
@@ -40,24 +26,29 @@ module.exports = {
 				use: {
 					loader: 'babel-loader',
 					query: {
-						presets: ["@babel/preset-react", [
-							"@babel/preset-env", {
-								// useBuiltIns: 'usage',
-								targets: {
-									browsers: [
-										"firefox esr",
-										"last 2 chrome version",
-										"last 1 ios version",
-										"last 1 and_chr version",
-										"last 1 edge version",
-									],
+						presets: [
+							'@babel/preset-react',
+							[
+								'@babel/preset-env',
+								{
+									useBuiltIns: 'usage',
+									corejs: 3,
+									targets: {
+										browsers: [
+											'firefox esr',
+											'last 1 chrome version',
+											'last 1 ios version',
+											'last 1 and_chr version',
+											'last 1 edge version',
+										],
+									},
 								},
-							},
-						]],
+							],
+						],
 						plugins: [
-							"@babel/plugin-transform-react-jsx",
-							"@babel/plugin-proposal-class-properties",
-							"@babel/plugin-proposal-object-rest-spread",
+							'@babel/plugin-transform-react-jsx',
+							'@babel/plugin-proposal-class-properties',
+							'@babel/plugin-proposal-object-rest-spread',
 						],
 					},
 				},

@@ -1,14 +1,14 @@
-'use strict';
-const crypto = require('crypto'),
-	sutil = require('./sutil'),
-	db = require('./db'),
-	Us = require('./Us'),
-	etg = require('../etg'),
-	aiDecks = require('../Decks'),
-	etgutil = require('../etgutil'),
-	RngMock = require('../RngMock'),
-	userutil = require('../userutil');
-module.exports = function(sockEmit) {
+import crypto from 'crypto';
+import * as sutil from './sutil.js';
+import db from './db.js';
+import * as Us from './Us.js';
+import * as etg from '../etg.js';
+import aiDecks from '../Decks.json';
+import * as etgutil from '../etgutil.js';
+import RngMock from '../RngMock.js';
+import * as userutil from '../userutil.js';
+
+export default function login(sockEmit) {
 	function loginRespond(socket, user, pass, authkey) {
 		function postHash(err, key) {
 			if (err) {
@@ -30,14 +30,16 @@ module.exports = function(sockEmit) {
 			if (socket.readyState == 1) {
 				const day = sutil.getDay();
 				if (user.oracle < day) {
+					if (user.ostreakday !== day - 1) {
+						user.ostreak = 0;
+					}
+					user.ostreakday = 0;
+					user.ostreakday2 = day;
 					user.oracle = day;
 					const ocardnymph = Math.random() < 0.03;
 					const card = RngMock.randomcard(
 						false,
-						x =>
-							x.type != etg.Pillar &&
-							(x.rarity != 5) ^ ocardnymph &&
-							x.code != user.ocard,
+						x => x.type != etg.Pillar && (x.rarity != 5) ^ ocardnymph,
 					);
 					const ccode = etgutil.asShiny(card.code, card.rarity == 5);
 					if (card.rarity > 1) {
@@ -88,9 +90,9 @@ module.exports = function(sockEmit) {
 			sockEmit(this, 'login', { err: 'No name' });
 			return;
 		} else {
-			Us.load(name).
-				then(user => loginRespond(this, user, data.p, data.a)).
-				catch(() => {
+			Us.load(name)
+				.then(user => loginRespond(this, user, data.p, data.a))
+				.catch(() => {
 					const user = { name, gold: 0 };
 					Us.users.set(name, user);
 					return loginRespond(this, user, data.p, data.a);
@@ -98,4 +100,4 @@ module.exports = function(sockEmit) {
 		}
 	}
 	return loginAuth;
-};
+}

@@ -1,34 +1,32 @@
-'use strict';
-var ui = require('../ui');
-var etg = require('../etg');
-var chat = require('../chat');
-var Cards = require('../Cards');
-var Effect = require('../Effect');
-var etgutil = require('../../etgutil');
-var Actives = require('../Skills');
-const App = require('../views/App'),
-	Rightpane = require('../views/Rightpane'),
-	store = require('../store'),
-	{ Provider } = require('react-redux'),
-	reactDOM = require('react-dom'),
-	React = require('react');
-var lastError = 0;
+import React from 'react';
+import reactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+
+import chat from '../chat.js';
+import * as store from '../store.js';
+
+let lastError = 0;
 window.onerror = function() {
-	var now = Date.now();
+	const now = Date.now();
 	if (lastError + 999 < now) {
 		chat(Array.apply(null, arguments).join(', '));
 		lastError = now;
 	}
 };
-reactDOM.render(
-	<Provider store={store.store}>
-		<App />
-	</Provider>,
-	document.getElementById("leftpane"),
+
+import('../views/App.js').then(App =>
+	reactDOM.render(
+		<Provider store={store.store}>
+			<App.default />
+		</Provider>,
+		document.getElementById('leftpane'),
+	),
 );
-reactDOM.render(
-	<Provider store={store.store}>
-		<Rightpane />
-	</Provider>,
-	document.getElementById("rightpane"),
+import('../views/Rightpane.js').then(Rightpane =>
+	reactDOM.render(
+		<Provider store={store.store}>
+			<Rightpane.default />
+		</Provider>,
+		document.getElementById('rightpane'),
+	),
 );

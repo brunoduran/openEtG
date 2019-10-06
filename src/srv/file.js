@@ -1,21 +1,22 @@
 'use strict';
-const { existsSync, watch, promises } = require('fs'),
-	fs = promises,
-	gzip = require('./gzip'),
-	sutil = require('./sutil'),
-	etgutil = require('../etgutil'),
-	cache = require('./cache'),
-	mime = {
-		css: 'text/css',
-		htm: 'text/html',
-		html: 'text/html',
-		js: 'application/javascript',
-		json: 'application/json',
-		map: 'application/octet-stream',
-		ogg: 'application/ogg',
-		png: 'image/png',
-	};
-module.exports = async function(url) {
+import fsCb from 'fs';
+const { existsSync, watch, promises } = fsCb,
+	fs = promises;
+
+import gzip from './gzip.js';
+import * as etgutil from '../etgutil.js';
+import * as cache from './cache.js';
+const mime = {
+	css: 'text/css',
+	htm: 'text/html',
+	html: 'text/html',
+	js: 'application/javascript',
+	json: 'application/json',
+	map: 'application/octet-stream',
+	ogg: 'application/ogg',
+	png: 'image/png',
+};
+export default async function(url) {
 	const contentType = mime[url.slice(url.lastIndexOf('.') + 1)];
 	if (!contentType) return reject('Unknown MIME');
 	if (url.startsWith('Cards/') && !existsSync(url)) {
@@ -51,16 +52,20 @@ module.exports = async function(url) {
 	return Promise.all([
 		fs.stat(url),
 		fs.readFile(url).then(buf => gzip(buf, { level: 9 })),
-	]).then(([stat, zbuf]) => {
-		watch(url, { persistent: false }, function(_e) {
-			cache.rm(url);
-			this.close();
+	])
+		.then(([stat, zbuf]) => {
+			watch(url, { persistent: false }, function(_e) {
+				cache.rm(url);
+				this.close();
+			});
+			stat.mtime.setMilliseconds(0);
+			return {
+				head: { 'Content-Encoding': 'gzip', 'Content-Type': contentType },
+				date: stat.mtime,
+				buf: zbuf,
+			};
+		})
+		.catch(err => {
+			throw err.message;
 		});
-		stat.mtime.setMilliseconds(0);
-		return {
-			head: { 'Content-Encoding': 'gzip', 'Content-Type': contentType },
-			date: stat.mtime,
-			buf: zbuf,
-		};
-	}).catch(err => { throw err.message; });
-};
+}

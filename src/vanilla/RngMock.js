@@ -1,6 +1,6 @@
-var Player = require('./Player');
-var PlayerRng = (module.exports = Object.create(Player.prototype));
-PlayerRng.rng = Math.random;
-PlayerRng.upto = function(x) {
-	return Math.floor(Math.random() * x);
-};
+import Game from '../Game.js';
+import Cards from './Cards.js';
+const RngMock = Object.create(Game.prototype);
+RngMock.props = new Map().set(1, new Map().set('Cards', Cards));
+RngMock.rng = Math.random;
+export default RngMock;

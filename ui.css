@@ -11,18 +11,34 @@ a{
 	color:#69f;
 	text-decoration:none;
 }
+a:hover{text-decoration:underline;}
 tr,td{padding:0}
 input[type="button"]{
 	background:linear-gradient(to bottom,#ddeef0,#8999a9);
 	border-radius:4px;
 	border:solid #000 1px;
-	width:72px;
+	width:80px;
 	height:20px;
 	cursor:pointer;
 }
 input[type="button"]:hover{background:linear-gradient(to bottom,#ccdde0,#586776)}
 input[type="button"]:hover:active{background:linear-gradient(to bottom,#aabbc0,#485766)}
-input[type="text"],input[type="password"],input[type="number"],input:not([type]){width:150px;border:2px solid rgba(0,0,0,.7777777);border-radius:4px;background-color:rgba(8,8,8,.5);color:#eee}
+select,input[type="text"],input[type="password"],input[type="number"],input:not([type]){width:150px;border:2px solid rgba(0,0,0,.7777777);border-radius:4px;background-color:rgba(8,8,8,.5);color:#eee}
+select{
+	-webkit-appearance:none;
+	-moz-appearance:none;
+	appearance:none;
+	color:#111;
+	background-color:#ddeef0;
+	background-image:url("data:image/svg+xml;utf8,<svg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'><path d='M0 0l5 5 5-5z'/></svg>");
+	background-repeat:no-repeat;
+	background-position-x:100%;
+	background-position-y:5px;
+	border:solid #000 1px;
+	border-radius:4px;
+}
+select:hover{background-color:#bbcccf}
+select:hover:active{background-color:#99aaaf}
 .bg_main{background-image:url(assets/bg_main.png);width:900px;height:600px}
 .width400{width:400px;margin:0}
 .floatRight{float:right}
@@ -33,7 +49,7 @@ input[type="text"],input[type="password"],input[type="number"],input:not([type])
 .atop2{display:inline-block;width:48px;text-align:right}
 .atop3{display:inline-block;width:48px}
 .atop4{display:inline-block;width:48px;text-align:right;margin-right:32px}
-.cardslot{font-size:11px;height:20px;width:100px;display:table-cell;line-height:20px;border:1px solid}
+.cardslot{font-size:11px;height:20px;width:100px;line-height:16px;padding:2px;border:1px solid;overflow:hidden;white-space:nowrap}
 .infobox{
 	opacity:.7;
 	background-color:#000;
@@ -141,13 +157,28 @@ input[type="text"],input[type="password"],input[type="number"],input:not([type])
 	0% { filter:hue-rotate(90deg) }
 	100% { filter:hue-rotate(270deg) }
 }
-@keyframes ants { to { background-position:100% 100% } }
-.ants-red {
-	background:linear-gradient(#fff, #fff) padding-box,
-		repeating-linear-gradient(-45deg, red 0, red 25%, #fff 0, #fff 50%) 0 / .6em .6em;
-	animation:ants 8s linear infinite;
+.inst {
+	width: 68px;
+	height: 68px;
+	font-size: 8px;
+	border: transparent 2px solid;
 }
+.handinst {
+	transition: transform .5s;
+}
+.handinst.canactive {
+	transform: translate(-4px);
+}
+.handinst.cantarget {
+	transform: translate(-4px);
+}
+.handinst:hover {
+	transform: translate(-8px);
+}
+.cantarget { border:2px #f00 solid!important;box-shadow:0 0 5px #f00 }
+.cantarget:hover { border:2px #ff0 solid!important;box-shadow:0 0 5px #ff0 }
 .canactive { border:2px #000 solid!important;box-shadow:0 0 5px #fff }
+.canactive:hover { border:2px #00f solid!important;box-shadow:0 0 5px #fff }
 .shiny {
 	animation:animatedShiny 8s linear infinite alternate-reverse;
 }
